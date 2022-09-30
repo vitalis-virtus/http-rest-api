@@ -84,7 +84,7 @@ func (s *APIServer) GetAuthors() http.HandlerFunc {
 	var authors []model.Author
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		res, err := s.store.DB.Query(fmt.Sprintf("SELECT * FROM booksdb.authors"))
+		res, err := s.store.DB.Query("SELECT * FROM booksdb.authors")
 		if err != nil {
 			log.Fatal(err)
 		}
