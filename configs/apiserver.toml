@@ -2,4 +2,4 @@ bind_addr=":8080"
 log_level="debug"
 
 [store]
-database_url="root:rootpassword@/booksdb"
+database_url="root:rootpassword@tcp(booksdb-mysql:3307)/booksdb"

@@ -8,7 +8,7 @@ import (
 
 type Store struct {
 	config *Config
-	Db     *sql.DB
+	DB     *sql.DB
 }
 
 func New(config *Config) *Store {
@@ -29,7 +29,7 @@ func (s *Store) Open() error {
 		return err
 	}
 
-	s.Db = db
+	s.DB = db
 
 	fmt.Println("Connected to DB")
 
@@ -38,5 +38,5 @@ func (s *Store) Open() error {
 
 // Close disconnecting for BD
 func (s *Store) Close() {
-	s.Db.Close()
+	s.DB.Close()
 }

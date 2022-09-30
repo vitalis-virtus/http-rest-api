@@ -7,6 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/vitalis-virtus/http-rest-api/internal/app/model"
 	"github.com/vitalis-virtus/http-rest-api/internal/app/store"
+	"io"
 	"log"
 	"net/http"
 )
@@ -77,13 +78,13 @@ func (s *APIServer) configureStore() error {
 	return nil
 }
 
-// handlers ...
+// GetAuthors handle function
 func (s *APIServer) GetAuthors() http.HandlerFunc {
 	// here we can initialize variables only for this handler
 	var authors []model.Author
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		res, err := s.store.Db.Query(fmt.Sprintf("SELECT * FROM booksdb.authors"))
+		res, err := s.store.DB.Query(fmt.Sprintf("SELECT * FROM booksdb.authors"))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -113,15 +114,16 @@ func (s *APIServer) GetAuthors() http.HandlerFunc {
 
 }
 
+// GetAuthor handle function
 func (s *APIServer) GetAuthor() http.HandlerFunc {
 	// here we can initialize variables only for this handler
 	var author model.Author
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
-		authorId := vars["id"]
+		authorID := vars["id"]
 
-		res, err := s.store.Db.Query(fmt.Sprintf("SELECT * FROM booksdb.authors WHERE id=%v", authorId))
+		res, err := s.store.DB.Query(fmt.Sprintf("SELECT * FROM booksdb.authors WHERE id=%v", authorID))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -149,19 +151,20 @@ func (s *APIServer) GetAuthor() http.HandlerFunc {
 
 }
 
+// UpdateAuthor handle function
 func (s *APIServer) UpdateAuthor() http.HandlerFunc {
 	// here we can initialize variables only for this handler
 	var name, surname string
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
-		authorId := vars["id"]
+		authorID := vars["id"]
 
 		name = r.FormValue("name")
 		surname = r.FormValue("surname")
 
 		if name != "" {
-			updateName, err := s.store.Db.Query(fmt.Sprintf("UPDATE booksdb.authors SET name='%s' WHERE id=%v", name, authorId))
+			updateName, err := s.store.DB.Query(fmt.Sprintf("UPDATE booksdb.authors SET name='%s' WHERE id=%v", name, authorID))
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -169,7 +172,7 @@ func (s *APIServer) UpdateAuthor() http.HandlerFunc {
 		}
 
 		if surname != "" {
-			updateSurname, err := s.store.Db.Query(fmt.Sprintf("UPDATE booksdb.authors SET surname='%s' WHERE id=%v", surname, authorId))
+			updateSurname, err := s.store.DB.Query(fmt.Sprintf("UPDATE booksdb.authors SET surname='%s' WHERE id=%v", surname, authorID))
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -181,15 +184,16 @@ func (s *APIServer) UpdateAuthor() http.HandlerFunc {
 
 }
 
+// DeleteAuthor handle function
 func (s *APIServer) DeleteAuthor() http.HandlerFunc {
 	// here we can initialize variables only for this handler
 	var author model.Author
 
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
-		authorId := vars["id"]
+		authorID := vars["id"]
 
-		res, err := s.store.Db.Query(fmt.Sprintf("SELECT * FROM booksdb.authors WHERE id=%v", authorId))
+		res, err := s.store.DB.Query(fmt.Sprintf("SELECT * FROM booksdb.authors WHERE id=%v", authorID))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -203,7 +207,10 @@ func (s *APIServer) DeleteAuthor() http.HandlerFunc {
 			}
 		}
 
-		resD, err := s.store.Db.Query(fmt.Sprintf("DELETE FROM booksdb.authors WHERE id=%v", authorId))
+		resD, err := s.store.DB.Query(fmt.Sprintf("DELETE FROM booksdb.authors WHERE id=%v", authorID))
+		if err != nil {
+			log.Fatal(err)
+		}
 
 		defer resD.Close()
 
@@ -218,6 +225,7 @@ func (s *APIServer) DeleteAuthor() http.HandlerFunc {
 
 }
 
+// CreateAuthor handle function
 func (s *APIServer) CreateAuthor() http.HandlerFunc {
 	// here we can initialize variables only for this handler
 	var name, surname string
@@ -229,7 +237,7 @@ func (s *APIServer) CreateAuthor() http.HandlerFunc {
 			fmt.Println("Bad request")
 
 		} else {
-			insert, err := s.store.Db.Query(fmt.Sprintf("INSERT INTO booksdb.authors (`name`, `surname`) VALUES ('%s', '%s')", name, surname))
+			insert, err := s.store.DB.Query(fmt.Sprintf("INSERT INTO booksdb.authors (`name`, `surname`) VALUES ('%s', '%s')", name, surname))
 
 			if err != nil {
 				log.Fatal(err)
@@ -240,5 +248,15 @@ func (s *APIServer) CreateAuthor() http.HandlerFunc {
 		}
 
 	}
+}
 
+// handleHello handle function
+func (s *APIServer) handleHello() http.HandlerFunc {
+	type request struct {
+		name string
+	}
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		io.WriteString(w, "hello")
+	}
 }
