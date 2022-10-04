@@ -12,6 +12,7 @@ type Store struct {
 }
 
 func New(config *Config) *Store {
+
 	return &Store{
 		config: config,
 	}
@@ -19,7 +20,7 @@ func New(config *Config) *Store {
 
 // Open func for store initalizing, connecting to BD
 func (s *Store) Open() error {
-	db, err := sql.Open("mysql", s.config.DatabaseUrl)
+	db, err := sql.Open("mysql", s.config.DatabaseURL)
 
 	if err != nil {
 		return err
