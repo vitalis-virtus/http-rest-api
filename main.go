@@ -16,6 +16,10 @@ func init() {
 	flag.StringVar(&configPath, "config-path", "./configs/apiserver.toml", "path to config file")
 }
 
+type B struct {
+	Age int
+}
+
 func main() {
 	flag.Parse()
 
