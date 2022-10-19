@@ -3,9 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
+
 	"github.com/BurntSushi/toml"
 	"github.com/vitalis-virtus/http-rest-api/internal/app/apiserver"
-	"log"
 )
 
 var (
@@ -14,10 +15,6 @@ var (
 
 func init() {
 	flag.StringVar(&configPath, "config-path", "./configs/apiserver.toml", "path to config file")
-}
-
-type B struct {
-	Age int
 }
 
 func main() {
