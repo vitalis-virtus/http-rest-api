@@ -3,9 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
+
 	"github.com/BurntSushi/toml"
 	"github.com/vitalis-virtus/http-rest-api/internal/app/apiserver"
-	"log"
 )
 
 var (
