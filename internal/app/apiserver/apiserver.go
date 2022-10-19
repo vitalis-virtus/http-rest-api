@@ -3,13 +3,14 @@ package apiserver
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"log"
+	"net/http"
+
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
 	"github.com/vitalis-virtus/http-rest-api/internal/app/model"
 	"github.com/vitalis-virtus/http-rest-api/internal/app/store"
-	"io"
-	"log"
-	"net/http"
 )
 
 type APIServer struct {
@@ -84,7 +85,7 @@ func (s *APIServer) GetAuthors() http.HandlerFunc {
 	var authors []model.Author
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		res, err := s.store.DB.Query("SELECT * FROM booksdb.authors")
+		res, err := s.store.DB.Query("SELECT * FROM book_test.authors")
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -123,7 +124,7 @@ func (s *APIServer) GetAuthor() http.HandlerFunc {
 		vars := mux.Vars(r)
 		authorID := vars["id"]
 
-		res, err := s.store.DB.Query(fmt.Sprintf("SELECT * FROM booksdb.authors WHERE id=%v", authorID))
+		res, err := s.store.DB.Query(fmt.Sprintf("SELECT * FROM book_test.authors WHERE id='%v'", authorID))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -164,7 +165,7 @@ func (s *APIServer) UpdateAuthor() http.HandlerFunc {
 		surname = r.FormValue("surname")
 
 		if name != "" {
-			updateName, err := s.store.DB.Query(fmt.Sprintf("UPDATE booksdb.authors SET name='%s' WHERE id=%v", name, authorID))
+			updateName, err := s.store.DB.Query(fmt.Sprintf("UPDATE book_test.authors SET name='%s' WHERE id='%v'", name, authorID))
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -172,7 +173,7 @@ func (s *APIServer) UpdateAuthor() http.HandlerFunc {
 		}
 
 		if surname != "" {
-			updateSurname, err := s.store.DB.Query(fmt.Sprintf("UPDATE booksdb.authors SET surname='%s' WHERE id=%v", surname, authorID))
+			updateSurname, err := s.store.DB.Query(fmt.Sprintf("UPDATE book_test.authors SET surname='%s' WHERE id='%v'", surname, authorID))
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -193,7 +194,7 @@ func (s *APIServer) DeleteAuthor() http.HandlerFunc {
 		vars := mux.Vars(r)
 		authorID := vars["id"]
 
-		res, err := s.store.DB.Query(fmt.Sprintf("SELECT * FROM booksdb.authors WHERE id=%v", authorID))
+		res, err := s.store.DB.Query(fmt.Sprintf("SELECT * FROM book_test.authors WHERE id='%v'", authorID))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -207,7 +208,7 @@ func (s *APIServer) DeleteAuthor() http.HandlerFunc {
 			}
 		}
 
-		resD, err := s.store.DB.Query(fmt.Sprintf("DELETE FROM booksdb.authors WHERE id=%v", authorID))
+		resD, err := s.store.DB.Query(fmt.Sprintf("DELETE FROM book_test.authors WHERE id = '%v'", authorID))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -237,7 +238,7 @@ func (s *APIServer) CreateAuthor() http.HandlerFunc {
 			fmt.Println("Bad request")
 
 		} else {
-			insert, err := s.store.DB.Query(fmt.Sprintf("INSERT INTO booksdb.authors (`name`, `surname`) VALUES ('%s', '%s')", name, surname))
+			insert, err := s.store.DB.Query(fmt.Sprintf("INSERT INTO book_test.authors (`name`, `surname`) VALUES ('%s', '%s')", name, surname))
 
 			if err != nil {
 				log.Fatal(err)
