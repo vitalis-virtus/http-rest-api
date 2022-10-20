@@ -21,9 +21,9 @@ services:
     - 3307:3306
     restart: on-failure
     environment:
-      - MYSQL_USER=pavel
+      - MYSQL_USER=vitalis
       - MYSQL_PASSWORD=password
-      - MYSQL_ROOT_PASSWORD=Mysql&paha100688
+      - MYSQL_ROOT_PASSWORD=Mysql&vitalisrootpassword
       - MYSQL_DATABASE=book_test
     networks:
       - fullstack
