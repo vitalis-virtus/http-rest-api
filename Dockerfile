@@ -10,6 +10,7 @@ ADD go.sum ./
 RUN go mod download
 
 COPY . .
+COPY ./sql-scripts/ /docker-entrypoint-initdb.d/
 
 RUN go build -o /main
 
